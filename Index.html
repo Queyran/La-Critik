@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>La Critik</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+```
+:root {
+  --bg: #f8f7f4;
+  --bg2: #ffffff;
+  --text: #1a1a1a;
+  --muted: #888;
+  --accent: #c0392b;
+  --accent-light: #fdf0ef;
+  --border: #e8e4de;
+  --sidebar-w: 280px;
+  --radius: 4px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── NAV ── */
+nav {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -1px;
+  text-decoration: none;
+}
+.logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+/* ── HERO ── */
+.hero {
+  background: var(--text);
+  color: white;
+  padding: 5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 40%, rgba(192,57,43,0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(192,57,43,0.4);
+  padding: 0.3rem 0.9rem;
+  border-radius: 2px;
+  margin-bottom: 1.6rem;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin-bottom: 1.2rem;
+}
+.hero h1 em { color: var(--accent); font-style: normal; }
+.hero p {
+  color: rgba(255,255,255,0.55);
+  font-size: 1.05rem;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ── SEARCH BAR ── */
+.search-section {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 1.2rem 2rem;
+}
+.search-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.search-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.search-controls {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.city-btn {
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.city-btn:hover { border-color: var(--text); }
+.city-btn.active {
+  background: var(--text);
+  color: white;
+  border-color: var(--text);
+}
+.result-count {
+  margin-left: auto;
+  font-size: 0.82rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ── MAIN LAYOUT ── */
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.3rem;
+}
+.section-sub {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin-bottom: 2.5rem;
+}
+
+/* ── CRITIQUE CARD ── */
+.critique-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+.critique-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr var(--sidebar-w);
+  transition: box-shadow 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+.critique-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.07); }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Main content */
+.critique-body {
+  padding: 2rem 2rem 2rem 2rem;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.critique-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.tag {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 0.2rem 0.7rem;
+  border-radius: 2px;
+  background: var(--accent-light);
+  color: var(--accent);
+}
+.critique-date {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+/* ── RATING BADGE (header meta) ── */
+.meta-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.meta-score {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.meta-denom { font-size: 0.75rem; color: var(--muted); }
+
+/* ── SIGNATURE RING BLOCK (sidebar) ── */
+.rating-block {
+  background: var(--text);
+  border-radius: 6px;
+  padding: 1.6rem 1.2rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+.rating-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% -10%, rgba(192,57,43,0.3) 0%, transparent 65%);
+  pointer-events: none;
+}
+.rating-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  z-index: 1;
+}
+.ring-wrap {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  z-index: 1;
+}
+.ring-svg {
+  width: 130px;
+  height: 130px;
+  transform: rotate(-90deg);
+}
+.ring-track {
+  fill: none;
+  stroke: rgba(255,255,255,0.07);
+  stroke-width: 7;
+}
+.ring-progress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 7;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ring-glow {
+  fill: none;
+  stroke: rgba(192,57,43,0.25);
+  stroke-width: 14;
+  stroke-linecap: round;
+}
+.ring-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+.ring-score {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+.ring-denom {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.35);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.rating-verdict-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.9rem;
+  border-radius: 99px;
+  z-index: 1;
+}
+.verdict-exceptional { background: rgba(192,57,43,0.28); color: #ff8a7a; }
+.verdict-excellent   { background: rgba(192,57,43,0.18); color: #ffaa9e; }
+.verdict-good        { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+.verdict-average     { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.3); }
+.verdict-poor        { background: rgba(0,0,0,0.2); color: rgba(255,255,255,0.2); }
+.critique-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+}
+.critique-subtitle {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: -0.6rem;
+}
+.critique-text {
+  font-size: 0.97rem;
+  line-height: 1.8;
+  color: #333;
+}
+.critique-verdict {
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+  font-size: 0.92rem;
+  font-style: italic;
+  color: var(--text);
+  background: var(--accent-light);
+  padding: 0.8rem 1rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  margin-top: auto;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: 'DM Sans', sans-serif;
+}
+.read-more:hover { opacity: 0.7; }
+
+/* Sidebar */
+.critique-sidebar {
+  padding: 2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  background: #fafaf8;
+}
+.sidebar-block-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.sidebar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.sidebar-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.sidebar-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--accent);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sidebar-row a {
+  color: var(--accent);
+  text-decoration: none;
+  word-break: break-all;
+}
+.sidebar-row a:hover { text-decoration: underline; }
+.sidebar-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+}
+.price-range {
+  display: flex;
+  gap: 3px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+.euro { color: var(--text); }
+.euro.dim { color: var(--border); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--muted);
+}
+.empty-state svg {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 1rem;
+  opacity: 0.3;
+  display: block;
+}
+.empty-state p { font-size: 0.95rem; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+footer span { color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 720px) {
+  .critique-card { grid-template-columns: 1fr; }
+  .critique-body { border-right: none; border-bottom: 1px solid var(--border); }
+  .hero h1 { font-size: 2.4rem; letter-spacing: -1px; }
+}
+```
+
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#">La<span>Critik</span></a>
+    <ul class="nav-links">
+      <li><a href="#">Accueil</a></li>
+      <li><a href="#">À propos</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+  <div class="hero-tag">Critique gastronomique indépendante</div>
+  <h1>La gastronomie,<br/><em>sans filtre.</em></h1>
+  <p>Des critiques honnêtes sur les meilleures tables de France. Pas de pub, pas de partenariat — juste l'assiette et la vérité.</p>
+</section>
+
+<!-- SEARCH -->
+
+<div class="search-section">
+  <div class="search-inner">
+    <span class="search-label">Ville</span>
+    <div class="search-controls" id="cityControls"></div>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+</div>
+
+<!-- MAIN -->
+
+<main class="main">
+  <h2 class="section-title">Dernières critiques</h2>
+  <p class="section-sub">Toutes les tables testées, notées et commentées.</p>
+  <div class="critique-list" id="critiqueList"></div>
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+  © 2025 <span>LaCritik</span> — Critique gastronomique indépendante
+</footer>
+
+<script>
+  // ── DATA ──
+  const critiques = [
+    {
+      id: 1,
+      restaurant: "Le Pressoir d'Argent",
+      soustitre: "Brasserie gastronomique — Gordon Ramsay Bordeaux",
+      ville: "Bordeaux",
+      quartier: "Triangle d'Or",
+      adresse: "2-5 Place de la Comédie, 33000 Bordeaux",
+      tel: "+33 5 57 30 43 04",
+      site: "https://www.lepressiondargent.com",
+      horaires: "Mar–Sam : 12h–14h / 19h–22h",
+      prix: 3,
+      note: 4,
+      cuisine: "Gastronomique",
+      date: "12 janvier 2025",
+      intro: "Installé dans le Grand Hôtel de Bordeaux, Le Pressoir d'Argent joue la carte du raffinement absolu. Dès l'entrée, le décor frappe — plafonds dorés, lumières tamisées, service en gants blancs.",
+      texte: "Le homard breton en croûte de sel était une révélation : chair nacrée, jus réduit à la perfection, beurre blanc ciselé avec une précision chirurgicale. En revanche, le dessert souffre d'un excès de sucre qui masque la finesse de l'ensemble. La carte des vins, impressionnante de profondeur sur les Bordeaux, compense largement. Le service est irréprochable — attentionné sans jamais être intrusif.",
+      verdict: "Une adresse de prestige qui tient ses promesses. Idéal pour une occasion spéciale, moins pour un dîner spontané.",
+    },
+    {
+      id: 2,
+      restaurant: "La Tupina",
+      soustitre: "Cuisine du Sud-Ouest — Institution bordelaise",
+      ville: "Bordeaux",
+      quartier: "Saint-Michel",
+      adresse: "6 Rue Porte de la Monnaie, 33000 Bordeaux",
+      tel: "+33 5 56 91 56 37",
+      site: "https://www.latupina.com",
+      horaires: "Tous les jours : 12h–14h30 / 19h–23h",
+      prix: 2,
+      note: 5,
+      cuisine: "Régionale",
+      date: "8 janvier 2025",
+      intro: "La Tupina, c'est une institution. Depuis 1968, cette adresse de la rive droite perpétue la tradition du Sud-Ouest avec une sincérité désarmante. La cheminée crépite, les jambons pendent au plafond — on est ici chez soi.",
+      texte: "Le confit de canard préparé à l'ancienne — cuit lentement dans sa propre graisse, servi avec des pommes sarladaises au four — est tout simplement parfait. Aucune fioriture, aucun artifice : juste la maîtrise d'une technique centenaire. Le foie gras poêlé, légèrement caramélisé, avec une compotée de figues maison, rivalise avec ce que j'ai mangé dans des étoilés trois fois plus chers. La générosité des portions est à la hauteur de l'accueil.",
+      verdict: "Meilleur rapport authenticité-qualité que j'ai testé à Bordeaux. Incontournable.",
+    },
+    {
+      id: 3,
+      restaurant: "Le Chalet de la Forêt",
+      soustitre: "Cuisine de saison — 2 étoiles Michelin",
+      ville: "Paris",
+      quartier: "Bois de Boulogne",
+      adresse: "Route de la Muette à Neuilly, 75016 Paris",
+      tel: "+33 1 47 50 35 15",
+      site: "https://www.lechalet.fr",
+      horaires: "Mar–Sam : 12h–13h30 / 19h30–21h30",
+      prix: 4,
+      note: 4,
+      cuisine: "Gastronomique",
+      date: "22 décembre 2024",
+      intro: "Niché dans le Bois de Boulogne, ce chalet étoilé offre une parenthèse rare dans la frénésie parisienne. La salle, tout en bois sombre et lumières dorées, donne l'impression d'un refuge.",
+      texte: "Le menu dégustation d'hiver m'a laissé une impression mitigée. Si les cinq premiers services — dont une langoustine rôtie sur lit de topinambour et une soupe de truffes noires absolument somptueuse — atteignent des sommets, les derniers plats semblent moins inspirés, comme si la cuisine cherchait l'effet plus que la cohérence. L'accord mets-vins, proposé à 95€ supplémentaires, est en revanche une réussite : sélection pointue, sommelière passionnée.",
+      verdict: "Beau niveau, mais pas encore à la hauteur de l'addition pour un dîner complet. À surveiller.",
+    },
+    {
+      id: 4,
+      restaurant: "Septime",
+      soustitre: "Bistronomie — Réservation impossible ou presque",
+      ville: "Paris",
+      quartier: "Bastille",
+      adresse: "80 Rue de Charonne, 75011 Paris",
+      tel: "+33 1 43 67 38 29",
+      site: "https://www.septime-charonne.fr",
+      horaires: "Lun–Ven : 12h15–14h / 19h30–22h",
+      prix: 3,
+      note: 5,
+      cuisine: "Bistronomique",
+      date: "15 novembre 2024",
+      intro: "Réserver chez Septime relève du sport de haut niveau. Les places partent en quelques secondes dès l'ouverture du planning. Après deux mois de tentatives, j'y ai enfin déjeuné — et la hype est méritée.",
+      texte: "Bertrand Grébaut propose une cuisine instinctive, ancrée dans les saisons, qui parle directement aux sens. Ce jour-là : huîtres pochées avec émulsion au yuzu, puis carotte rôtie entière avec crème de cèpes — un plat végétal d'une profondeur rare. Le plat de résistance, un lieu jaune avec beurre noisette et pickles d'oignons doux, était d'une justesse absolue. Rien de trop, rien de moins. La salle, bruyante mais vivante, participe à l'énergie de l'endroit.",
+      verdict: "Parmi les meilleures tables parisiennes. Si vous avez la chance d'avoir une réservation, ne la lâchez pas.",
+    },
+  ];
+
+  // ── HELPERS ──
+  const cities = ['Toutes', ...new Set(critiques.map(c => c.ville))];
+  let activeCity = 'Toutes';
+
+  // Small score badge for meta header
+  function metaStars(n) {
+    const score = (n * 2).toFixed(0);
+    return `<div class="meta-rating">
+      <span class="meta-score">${score}</span><span class="meta-denom">/10</span>
+    </div>`;
+  }
+
+  const verdictLabel = n => {
+    if (n >= 5) return ['verdict-exceptional', 'Exceptionnel'];
+    if (n >= 4) return ['verdict-excellent',   'Excellent'];
+    if (n >= 3) return ['verdict-good',         'Bien'];
+    if (n >= 2) return ['verdict-average',      'Passable'];
+    return              ['verdict-poor',         'Décevant'];
+  };
+
+  function ratingBlock(n) {
+    const score = (n * 2).toFixed(0);
+    const [cls, label] = verdictLabel(n);
+    const r = 56;
+    const circ = 2 * Math.PI * r;
+    const pct = n / 5;
+    const offset = circ * (1 - pct);
+    const id = `ring-${n}-${Math.random().toString(36).slice(2,6)}`;
+    return `
+    <div class="rating-block">
+      <span class="rating-label">La note LaCritik</span>
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 130 130">
+          <circle class="ring-track" cx="65" cy="65" r="${r}"/>
+          <circle class="ring-glow" cx="65" cy="65" r="${r}"
+            stroke-dasharray="${circ}"
+            stroke-dashoffset="${offset}"
+            transform="rotate(-90 65 65)"
+          />
+          <circle class="ring-progress" cx="65" cy="65" r="${r}"
+            stroke-dasharray="${circ}"
+            stroke-dashoffset="${circ}"
+            transform="rotate(-90 65 65)"
+            data-offset="${offset}"
+            id="${id}"
+          />
+        </svg>
+        <div class="ring-inner">
+          <span class="ring-score">${score}</span>
+          <span class="ring-denom">sur 10</span>
+        </div>
+      </div>
+      <span class="rating-verdict-label ${cls}">${label}</span>
+    </div>`;
+  }
+
+  function euros(n, max = 4) {
+    return Array.from({length: max}, (_, i) =>
+      `<span class="euro ${i < n ? '' : 'dim'}">€</span>`).join('');
+  }
+
+  function renderCard(c, delay) {
+    return `
+    <article class="critique-card" style="animation-delay:${delay}ms">
+      <!-- BODY -->
+      <div class="critique-body">
+        <div class="critique-meta">
+          <span class="tag">${c.cuisine}</span>
+          <span class="tag" style="background:#f0f4fd;color:#3a5bbf">${c.ville}</span>
+          <span class="critique-date">${c.date}</span>
+          ${metaStars(c.note)}
+        </div>
+        <h2 class="critique-title">${c.restaurant}</h2>
+        <p class="critique-subtitle">${c.soustitre}</p>
+        <p class="critique-text"><strong>${c.intro}</strong></p>
+        <p class="critique-text">${c.texte}</p>
+        <div class="critique-verdict">💬 ${c.verdict}</div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="critique-sidebar">
+        <div>
+          <p class="sidebar-block-title">Infos pratiques</p>
+          <div class="sidebar-info">
+            <div class="sidebar-row">
+              <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>${c.adresse}</span>
+            </div>
+            <div class="sidebar-row">
+              <svg class="sidebar-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.43 19.79 19.79 0 01.04 4.18 2 2 0 012 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              <span>${c.tel}</span>
+            </div>
+            <div class="sidebar-row">
+              <svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <a href="${c.site}" target="_blank" rel="noopener">${c.site.replace('https://','')}</a>
+            </div>
+            <div class="sidebar-row">
+              <svg class="sidebar-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>${c.horaires}</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="sidebar-divider"/>
+
+        <div>
+          <p class="sidebar-block-title">Quartier</p>
+          <div class="sidebar-row" style="font-size:0.9rem;font-weight:500;">${c.quartier} — ${c.ville}</div>
+        </div>
+
+        <hr class="sidebar-divider"/>
+
+        <div>
+          <p class="sidebar-block-title">Budget</p>
+          <div class="price-range">${euros(c.prix)}</div>
+          <p style="font-size:0.75rem;color:var(--muted);margin-top:0.3rem;">${['', 'Moins de 30€', '30–60€', '60–100€', '100€ et +'][c.prix]}</p>
+        </div>
+
+        <hr class="sidebar-divider"/>
+
+        ${ratingBlock(c.note)}
+      </aside>
+    </article>`;
+  }
+
+  // ── RENDER ──
+  function render() {
+    const filtered = activeCity === 'Toutes'
+      ? critiques
+      : critiques.filter(c => c.ville === activeCity);
+
+    // Update count
+    document.getElementById('resultCount').textContent =
+      filtered.length === 1 ? '1 critique' : `${filtered.length} critiques`;
+
+    // Update list
+    const list = document.getElementById('critiqueList');
+    if (filtered.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p>Aucune critique pour cette ville pour le moment.</p>
+        </div>`;
+    } else {
+      list.innerHTML = filtered.map((c, i) => renderCard(c, i * 80)).join('');
+    }
+
+    // Update buttons
+    document.querySelectorAll('.city-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.city === activeCity);
+    });
+  }
+
+  // ── CITY BUTTONS ──
+  const controls = document.getElementById('cityControls');
+  cities.forEach(city => {
+    const btn = document.createElement('button');
+    btn.className = 'city-btn';
+    btn.textContent = city;
+    btn.dataset.city = city;
+    btn.addEventListener('click', () => {
+      activeCity = city;
+      render();
+      setTimeout(animateRings, 60);
+    });
+    controls.appendChild(btn);
+  });
+
+  function animateRings() {
+    document.querySelectorAll('.ring-progress').forEach(el => {
+      const target = parseFloat(el.dataset.offset);
+      const circ = 2 * Math.PI * 56;
+      el.style.transition = 'none';
+      el.style.strokeDashoffset = circ;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        el.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1)';
+        el.style.strokeDashoffset = target;
+      }));
+    });
+  }
+
+  render();
+  setTimeout(animateRings, 80);
+</script>
+
+</body>
+</html>
